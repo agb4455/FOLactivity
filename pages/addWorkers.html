@@ -94,29 +94,31 @@ title: "Añadir trabajador"
   </div>
 
   <script>
-    document.getElementById("workerForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Evita el envío del formulario
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("workerForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita el envío del formulario
 
-        let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+            let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
 
-        let nuevoTrabajador = {
-            id: trabajadores.length > 0 ? trabajadores[trabajadores.length - 1].id + 1 : 1,
-            nombre: document.getElementById("nombre").value,
-            apellidos: document.getElementById("apellidos").value,
-            dni: document.getElementById("dni").value,
-            nss: document.getElementById("nss").value,
-            direccion: document.getElementById("direccion").value,
-            anioInicio: document.getElementById("anioInicio").value,
-            cargo: document.getElementById("cargo").value,
-            tramoSS: document.getElementById("tramoSS").value
-        };
+            let nuevoTrabajador = {
+                id: trabajadores.length > 0 ? trabajadores[trabajadores.length - 1].id + 1 : 1,
+                nombre: document.getElementById("nombre").value,
+                apellidos: document.getElementById("apellidos").value,
+                dni: document.getElementById("dni").value,
+                nss: document.getElementById("nss").value,
+                direccion: document.getElementById("direccion").value,
+                anioInicio: document.getElementById("anioInicio").value,
+                cargo: document.getElementById("cargo").value,
+                tramoSS: document.getElementById("tramoSS").value
+            };
 
-        trabajadores.push(nuevoTrabajador);
+            trabajadores.push(nuevoTrabajador);
 
-        localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+            localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
 
-        alert("Trabajador guardado correctamente.");
-        document.getElementById("workerForm").reset();
+            alert("Trabajador guardado correctamente.");
+            document.getElementById("workerForm").reset();
+        });
     });
 </script>
 
