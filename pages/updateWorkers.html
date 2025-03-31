@@ -5,62 +5,64 @@ title: "Modificar trabajador"
 
 <div class="container my-5">
     <div class="form-container">
-    <h2 class="text-center mb-4">Editar Trabajador</h2>
-    <!-- El formulario es igual al de "añadir", salvo que se rellenarán los campos -->
-    <form id="workerForm">
-        <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" placeholder="Introduce el nombre" required />
-        </div>
-        <div class="form-group">
-        <label for="apellidos">Apellidos</label>
-        <input type="text" class="form-control" id="apellidos" placeholder="Introduce los apellidos" required />
-        </div>
-        <div class="form-group">
-        <label for="dni">DNI</label>
-        <input type="text" class="form-control" id="dni" placeholder="Introduce el DNI" required />
-        </div>
-        <div class="form-group">
-        <label for="nss">Número de la Seguridad Social</label>
-        <input type="text" class="form-control" id="nss" placeholder="Introduce el número de la seguridad social" required />
-        </div>
-        <div class="form-group">
-        <label for="direccion">Dirección Postal</label>
-        <input type="text" class="form-control" id="direccion" placeholder="Introduce la dirección postal" required />
-        </div>
-        <div class="form-group">
-        <label for="anioInicio">Año de inicio en la empresa</label>
-        <input type="number" class="form-control" id="anioInicio" placeholder="Introduce el año de inicio" required />
-        </div>
-        <div class="form-group">
-        <label for="cargo">Cargo Profesional</label>
-        <input type="text" class="form-control" id="cargo" placeholder="Introduce el cargo profesional" required />
-        </div>
-        <div class="form-group">
-        <label for="tramoSS">Tramo Seguridad Social</label>
-        <select class="form-control" id="tramoSS" required>
-            <option value="" disabled selected>Seleccione el tramo</option>
-            <option value="1">Tramo 1</option>
-            <option value="2">Tramo 2</option>
-            <option value="3">Tramo 3</option>
-            <option value="4">Tramo 4</option>
-        </select>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
-    </form>
+        <h2 class="text-center mb-4">Editar Trabajador</h2>
+        <form id="workerForm">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="nombre" placeholder="Introduce el nombre" required />
+            </div>
+            <div class="form-group">
+                <label for="apellidos">Apellidos</label>
+                <input type="text" class="form-control" id="apellidos" placeholder="Introduce los apellidos" required />
+            </div>
+            <div class="form-group">
+                <label for="dni">DNI</label>
+                <input type="text" class="form-control" id="dni" placeholder="Introduce el DNI" required />
+            </div>
+            <div class="form-group">
+                <label for="nss">Número de la Seguridad Social</label>
+                <input type="text" class="form-control" id="nss" placeholder="Introduce el número de la seguridad social" required />
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección Postal</label>
+                <input type="text" class="form-control" id="direccion" placeholder="Introduce la dirección postal" required />
+            </div>
+            <div class="form-group">
+                <label for="anioInicio">Año de inicio en la empresa</label>
+                <input type="number" class="form-control" id="anioInicio" placeholder="Introduce el año de inicio" required />
+            </div>
+            <div class="form-group">
+                <label for="cargo">Cargo Profesional</label>
+                <input type="text" class="form-control" id="cargo" placeholder="Introduce el cargo profesional" required />
+            </div>
+            <div class="form-group">
+                <label for="tramoSS">Tramo Seguridad Social</label>
+                <select class="form-control" id="tramoSS" required>
+                    <option value="" disabled selected>Seleccione el tramo</option>
+                    <option value="1">Tramo 1</option>
+                    <option value="2">Tramo 2</option>
+                    <option value="3">Tramo 3</option>
+                    <option value="4">Tramo 4</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
+        </form>
     </div>
 </div>
 
 <script>
+    // Función para obtener el parámetro 'id' de la URL
     function getQueryParameter(param) {
         const params = new URLSearchParams(window.location.search);
         return params.get(param);
     }
 
+    // Cargar los datos del trabajador desde localStorage y rellenar el formulario
     function cargarDatosTrabajador(id) {
         let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
 
-        let trabajador = trabajadores.find(t => t.id == id);
+        // Buscar al trabajador con el ID dado (asegúrate de comparar correctamente los tipos)
+        let trabajador = trabajadores.find(t => t.id === Number(id)); // Convertir id a número si es string
         if (trabajador) {
             document.getElementById("nombre").value = trabajador.nombre || "";
             document.getElementById("apellidos").value = trabajador.apellidos || "";
@@ -75,10 +77,45 @@ title: "Modificar trabajador"
         }
     }
 
+    // Función para actualizar los datos del trabajador
+    function actualizarTrabajador(id, trabajadorActualizado) {
+        let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+        let index = trabajadores.findIndex(t => t.id === id);
+
+        if (index !== -1) {
+            trabajadores[index] = trabajadorActualizado;
+            localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+            alert("Trabajador actualizado correctamente.");
+        } else {
+            alert("No se encontró el trabajador con el ID: " + id);
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         const workerId = getQueryParameter("id");
         if (workerId) {
-            cargarDatosTrabajador(workerId);
+            cargarDatosTrabajador(workerId); // Cargar los datos del trabajador en el formulario
+
+            // Manejar el envío del formulario para actualizar los datos
+            document.getElementById("workerForm").addEventListener("submit", (event) => {
+                event.preventDefault();
+
+                // Recoger los nuevos datos
+                let trabajadorActualizado = {
+                    id: Number(workerId), // Asegúrate de que el id es un número
+                    nombre: document.getElementById("nombre").value,
+                    apellidos: document.getElementById("apellidos").value,
+                    dni: document.getElementById("dni").value,
+                    nss: document.getElementById("nss").value,
+                    direccion: document.getElementById("direccion").value,
+                    anioInicio: document.getElementById("anioInicio").value,
+                    cargo: document.getElementById("cargo").value,
+                    tramoSS: document.getElementById("tramoSS").value
+                };
+
+                // Actualizar los datos del trabajador
+                actualizarTrabajador(workerId, trabajadorActualizado);
+            });
         }
     });
 </script>
