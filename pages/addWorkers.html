@@ -2,79 +2,43 @@
 layout: default
 title: "Añadir trabajador"
 ---
-<div class="container my-5">
+<!-- Botón para mostrar el formulario -->
+<button class="btn btn-success mb-4" id="btnAñadirTrabajador">
+    Añadir Trabajador
+  </button>
+
+  <!-- Formulario oculto por defecto -->
+  <div id="workerFormContainer" class="collapse mb-4">
     <div class="form-container">
       <h2 class="text-center mb-4">Añadir Trabajador</h2>
-      <form id="workerForm"> <!-- Añadido el ID -->
+      <form id="workerForm">
         <div class="form-group">
           <label for="nombre">Nombre</label>
-          <input
-            type="text"
-            class="form-control"
-            id="nombre"
-            placeholder="Introduce el nombre"
-            required
-          />
+          <input type="text" class="form-control" id="nombre" placeholder="Introduce el nombre" required />
         </div>
         <div class="form-group">
           <label for="apellidos">Apellidos</label>
-          <input
-            type="text"
-            class="form-control"
-            id="apellidos"
-            placeholder="Introduce los apellidos"
-            required
-          />
+          <input type="text" class="form-control" id="apellidos" placeholder="Introduce los apellidos" required />
         </div>
         <div class="form-group">
           <label for="dni">DNI</label>
-          <input
-            type="text"
-            class="form-control"
-            id="dni"
-            placeholder="Introduce el DNI"
-            required
-          />
+          <input type="text" class="form-control" id="dni" placeholder="Introduce el DNI" required />
         </div>
         <div class="form-group">
           <label for="nss">Número de la Seguridad Social</label>
-          <input
-            type="text"
-            class="form-control"
-            id="nss"
-            placeholder="Introduce el número de la seguridad social"
-            required
-          />
+          <input type="text" class="form-control" id="nss" placeholder="Introduce el número de la seguridad social" required />
         </div>
         <div class="form-group">
           <label for="direccion">Dirección Postal</label>
-          <input
-            type="text"
-            class="form-control"
-            id="direccion"
-            placeholder="Introduce la dirección postal"
-            required
-          />
+          <input type="text" class="form-control" id="direccion" placeholder="Introduce la dirección postal" required />
         </div>
         <div class="form-group">
           <label for="anioInicio">Año de inicio en la empresa</label>
-          <input
-            type="number"
-            class="form-control"
-            id="anioInicio"
-            placeholder="Introduce el año de inicio"
-            required
-          />
+          <input type="number" class="form-control" id="anioInicio" placeholder="Introduce el año de inicio" required />
         </div>
         <div class="form-group">
           <label for="cargo">Cargo Profesional</label>
-          <input
-            type="text"
-            class="form-control"
-            id="cargo"
-            placeholder="Introduce el cargo profesional"
-            required
-          />
+          <input type="text" class="form-control" id="cargo" placeholder="Introduce el cargo profesional" required />
         </div>
         <div class="form-group">
           <label for="tramoSS">Tramo Seguridad Social</label>
@@ -91,34 +55,73 @@ title: "Añadir trabajador"
         </button>
       </form>
     </div>
+  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("workerForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Evita el envío del formulario
+  <!-- Lista de trabajadores -->
+  <h3>Lista de Trabajadores</h3>
+  <ul id="trabajadoresList" class="list-group">
+    <!-- Los trabajadores se agregarán aquí dinámicamente -->
+  </ul>
 
-            let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+</div>
 
-            let nuevoTrabajador = {
-                id: trabajadores.length > 0 ? trabajadores[trabajadores.length - 1].id + 1 : 1,
-                nombre: document.getElementById("nombre").value,
-                apellidos: document.getElementById("apellidos").value,
-                dni: document.getElementById("dni").value,
-                nss: document.getElementById("nss").value,
-                direccion: document.getElementById("direccion").value,
-                anioInicio: document.getElementById("anioInicio").value,
-                cargo: document.getElementById("cargo").value,
-                tramoSS: document.getElementById("tramoSS").value
-            };
+<script>
+  // Mostrar el formulario al pulsar el botón "Añadir Trabajador"
+  document.getElementById("btnAñadirTrabajador").addEventListener("click", function() {
+    document.getElementById("workerFormContainer").classList.toggle("collapse");
+  });
 
-            trabajadores.push(nuevoTrabajador);
+  // Función para cargar la lista de trabajadores desde localStorage
+  function cargarTrabajadores() {
+    let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+    let lista = document.getElementById("trabajadoresList");
+    lista.innerHTML = ''; // Limpiar la lista
 
-            localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+    trabajadores.forEach(function(trabajador) {
+      let li = document.createElement("li");
+      li.classList.add("list-group-item");
 
-            alert("Trabajador guardado correctamente.");
+      li.innerHTML = `${trabajador.nombre} ${trabajador.apellidos} - ${trabajador.dni} 
+        <a href="/modificar?id=${trabajador.id}" class="btn btn-warning btn-sm float-right ml-2">
+          <i class="fas fa-edit"></i> Editar
+        </a>`;
 
-            document.getElementById("workerForm").reset();
-        });
+      lista.appendChild(li);
     });
-</script>
+  }
 
+  // Cargar los trabajadores cuando la página se cargue
+  document.addEventListener("DOMContentLoaded", function() {
+    cargarTrabajadores();
+
+    // Manejo del envío del formulario
+    document.getElementById("workerForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+
+      let nuevoTrabajador = {
+        id: trabajadores.length > 0 ? trabajadores[trabajadores.length - 1].id + 1 : 1,
+        nombre: document.getElementById("nombre").value,
+        apellidos: document.getElementById("apellidos").value,
+        dni: document.getElementById("dni").value,
+        nss: document.getElementById("nss").value,
+        direccion: document.getElementById("direccion").value,
+        anioInicio: document.getElementById("anioInicio").value,
+        cargo: document.getElementById("cargo").value,
+        tramoSS: document.getElementById("tramoSS").value
+      };
+
+      trabajadores.push(nuevoTrabajador);
+
+      // Guardar en localStorage
+      localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+
+      alert("Trabajador guardado correctamente.");
+      document.getElementById("workerForm").reset();
+
+      // Recargar la lista de trabajadores
+      cargarTrabajadores();
+    });
+  });
+</script>
