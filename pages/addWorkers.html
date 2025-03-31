@@ -5,7 +5,7 @@ title: "Añadir trabajador"
 <div class="container my-5">
     <div class="form-container">
       <h2 class="text-center mb-4">Añadir Trabajador</h2>
-      <form id="workerForm">
+      <form id="workerForm"> <!-- Añadido el ID -->
         <div class="form-group">
           <label for="nombre">Nombre</label>
           <input
@@ -91,7 +91,6 @@ title: "Añadir trabajador"
         </button>
       </form>
     </div>
-  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -117,6 +116,7 @@ title: "Añadir trabajador"
             localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
 
             alert("Trabajador guardado correctamente.");
+
             document.getElementById("workerForm").reset();
         });
     });
